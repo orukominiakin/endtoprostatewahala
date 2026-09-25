@@ -430,52 +430,55 @@
 
         let submitted = false;
 
-        form.addEventListener('submit', function(e) {
-            if (submitted) return;
-            submitted = true;
+     ```html
+form.addEventListener('submit', function(e) {
+    if (submitted) return;
+    submitted = true;
 
-            const formData = new FormData(form);
-            const firstName = formData.get('first_name') || '';
-            const lastName = formData.get('last_name') || '';
-            const phone = formData.get('phone_number') || '';
-            const whatsappNumber = formData.get('whatsapp_number') || '';
-            const state = formData.get('state') || '';
-            const city = formData.get('city') || '';
-            const address = formData.get('delivery_address') || '';
+    const formData = new FormData(form);
+    const firstName = formData.get('first_name') || '';
+    const lastName = formData.get('last_name') || '';
+    const phone = formData.get('phone_number') || '';
+    const whatsappNumber = formData.get('whatsapp_number') || '';
+    const state = formData.get('state') || '';
+    const city = formData.get('city') || '';
+    const address = formData.get('delivery_address') || '';
 
-            // Keep the existing WhatsApp redirection.
-            const waNumber = whatsappNumber.replace(/\D/g, '').replace(/^0/, '234');
-            const waText =
-                `Hello, I just placed my order for Prostate Solution.%0A%0A` +
-                `*Name:* ${encodeURIComponent(firstName + ' ' + lastName)}%0A` +
-                `*Phone:* ${encodeURIComponent(phone)}%0A` +
-                `*WhatsApp:* ${encodeURIComponent(whatsappNumber)}%0A` +
-                `*State:* ${encodeURIComponent(state)}%0A` +
-                `*City:* ${encodeURIComponent(city)}%0A` +
-                `*Address:* ${encodeURIComponent(address)}`;
+    // YOUR WhatsApp number - customer details will be sent here
+    const waNumber = '2347073863607';
 
-            const waUrl = `https://wa.me/${waNumber}?text=${waText}`;
-            whatsappRedirectBtn.href = waUrl;
+    const waText =
+        `Hello, I just placed an order for Prostate Solution.%0A%0A` +
+        `*Name:* ${encodeURIComponent(firstName + ' ' + lastName)}%0A` +
+        `*Phone:* ${encodeURIComponent(phone)}%0A` +
+        `*WhatsApp:* ${encodeURIComponent(whatsappNumber)}%0A` +
+        `*State:* ${encodeURIComponent(state)}%0A` +
+        `*City:* ${encodeURIComponent(city)}%0A` +
+        `*Address:* ${encodeURIComponent(address)}`;
 
-            // The normal HTML form POST goes to Google Apps Script via the hidden iframe.
-            // The Apps Script backend saves the row and sends the email notification.
-            successModal.classList.remove('hidden');
+    const waUrl = `https://wa.me/${waNumber}?text=${waText}`;
+    whatsappRedirectBtn.href = waUrl;
 
-            // Track the lead after the customer submits the form.
-            if (typeof window.fbq === 'function') {
-                window.fbq('track', 'Lead', {
-                    content_name: 'Prostate Solution - Herbal Formula',
-                    content_category: 'Order Form',
-                    value: 50000,
-                    currency: 'NGN'
-                });
-            }
+    // The normal HTML form POST goes to Google Apps Script via the hidden iframe.
+    // The Apps Script backend saves the row and sends the email notification.
+    successModal.classList.remove('hidden');
 
-            // Preserve the existing behavior: continue to WhatsApp after 4 seconds.
-            setTimeout(() => {
-                window.location.href = waUrl;
-            }, 4000);
+    // Track the lead after the customer submits the form.
+    if (typeof window.fbq === 'function') {
+        window.fbq('track', 'Lead', {
+            content_name: 'Prostate Solution - Herbal Formula',
+            content_category: 'Order Form',
+            value: 50000,
+            currency: 'NGN'
         });
+    }
+
+    // Redirect to YOUR WhatsApp after 4 seconds.
+    setTimeout(() => {
+        window.location.href = waUrl;
+    }, 4000);
+});
+```
     </script>
 </body>
 </html>
